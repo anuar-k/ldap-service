@@ -1,0 +1,13 @@
+version: '2'
+services:
+  ldap:
+    image: osixia/openldap:1.5.0
+    container_name: ldap
+    environment:
+        - LDAP_ORGANISATION=rahasak
+        - LDAP_DOMAIN=rahasak.com
+        - "LDAP_BASE_DN=dc=rahasak,dc=com"
+        - LDAP_ADMIN_PASSWORD=rahasak
+    ports:
+        - 389:389
+        - 636:636
