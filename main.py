@@ -25,8 +25,8 @@ def getUserByName(username):
                 if key in user:
                     user[key].extend(val)
                 else:
-                    if key in 'userPassword':
-                        user[key] = str(val).split("\'")[1]
+                    if 'password' in str(key).lower():
+                        continue
                     else:
                         user[key] = val
     if user:
