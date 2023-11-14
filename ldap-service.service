@@ -3,11 +3,15 @@ Description=Ldap search service
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /tmp/main.py
-WorkingDirectory=/tmp
-Restart=always
 User=nobody
 Group=nogroup
+ExecStart=/usr/bin/python3 /tmp/main.py
+WorkingDirectory=/tmp
+Environment="PATH=/tmp/"
+Restart=always
+ExecStart=/apps/test-app/bin/gunicorn --workers 9  -t 0  --bind 127.0.0.1:5000 -m 007 wsgi:app --log-level debug --access-logfile /tmp/ldap.log --error-logfile /tmp/ldap_error.log
+ExecReload=/bin/kill -s HUP $MAINPID
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
