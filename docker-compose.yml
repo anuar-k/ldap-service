@@ -1,8 +1,5 @@
 version: '2'
 
-#networks:
-#  my-network:
-#    driver: bridge
 services:
   openldap:
     image: bitnami/openldap:2
