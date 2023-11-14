@@ -19,17 +19,19 @@ def getUserByName(username):
     # Search for the user by username
     search_filter = f'(uid={username})'
     conn.search(search_base=LDAP_SEARCH_BASE, search_filter=search_filter, search_scope=SUBTREE,
-                attributes=['uid', 'cn', 'sn', 'homeDirectory'])
+                attributes=['*'])
+    # attributes=['uid', 'cn', 'sn', 'homeDirectory'])
 
+    user = {}
     if conn.entries:
-        user = {
-            'uid': conn.entries[0].uid.value,
-            'cn': conn.entries[0].cn.value,
-            'homeDirectory': conn.entries[0].sn.value,
-            'sn': conn.entries[0].homeDirectory.value
-        }
-        if user:
-            return user
+        for entry in conn.entries:
+            for key, val in entry.entry_attributes_as_dict.items():
+                # print(str(key) + ' : ' + str(val))
+                if key in user:
+                    user[key].extend(val)
+                else:
+                    user[key] = val
+    return str(user)
 
 
 @app.route('/user/<username>')
