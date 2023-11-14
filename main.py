@@ -1,23 +1,50 @@
-from flask import Flask, redirect, jsonify
-from datetime import date
+from flask import Flask, jsonify
+
+from ldap3 import Server, Connection, SUBTREE
 
 app = Flask(__name__)
-port = 500
+port = 5000
 
-@app.route("/")
-def index():
-    return redirect("http://127.0.0.1:5000/info/", code=302)
+LDAP_SERVER = '127.0.0.1:389'
+LDAP_BIND_DN = 'cn=admin,dc=example,dc=org'
+LDAP_BIND_PASSWORD = 'admin'
+LDAP_SEARCH_BASE = 'ou=users,dc=example,dc=org'
 
-@app.route('/info/')
-def info():
-    return '''send request to <a href=http://127.0.0.1:5000/info/{username}> </a>'''
 
-@app.route('/info/<username>')
-def infoByUserName(username):
-    return jsonify(
-        greeting=["hello", "world"],
-        date=date.today(),
-    )
+def getUserByName(username):
+    # try:
+    server = Server(LDAP_SERVER)
+    conn = Connection(server, user=LDAP_BIND_DN, password=LDAP_BIND_PASSWORD, auto_bind=True)
+
+    # Search for the user by username
+    search_filter = f'(uid={username})'
+    conn.search(search_base=LDAP_SEARCH_BASE, search_filter=search_filter, search_scope=SUBTREE,
+                attributes=['uid', 'cn', 'sn', 'homeDirectory'])
+
+    if conn.entries:
+        user = {
+            'uid': conn.entries[0].uid.value,
+            'cn': conn.entries[0].cn.value,
+            'homeDirectory': conn.entries[0].sn.value,
+            'sn': conn.entries[0].homeDirectory.value
+        }
+        if user:
+            return user
+
+
+@app.route('/user/<username>')
+def get_user(username):
+    try:
+        user = getUserByName(username)
+
+        if user:
+            return jsonify({'data': user, 'error': ''})
+        else:
+            return jsonify({'data': {}, 'error': 'User not found'})
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return jsonify({'data': {}, 'error': str(e)})
+
 
 if __name__ == '__main__':
-    app.run(debug=True, port=port)
+    app.run(debug=True, port=5000)

@@ -1,13 +1,18 @@
 version: '2'
+
+#networks:
+#  my-network:
+#    driver: bridge
 services:
-  ldap:
-    image: osixia/openldap:1.5.0
-    container_name: ldap
-    environment:
-        - LDAP_ORGANISATION=rahasak
-        - LDAP_DOMAIN=rahasak.com
-        - "LDAP_BASE_DN=dc=rahasak,dc=com"
-        - LDAP_ADMIN_PASSWORD=rahasak
+  openldap:
+    image: bitnami/openldap:2
     ports:
-        - 389:389
-        - 636:636
+      - '389:1389'
+      - '636:1636'
+    environment:
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=admin
+      - LDAP_USERS=user01,user02
+      - LDAP_ADMIN_DN=cn=admin,dc=example,dc=org
+      - LDAP_ROOT=dc=example,dc=org
+      - LDAP_PASSWORDS=password1,password2
