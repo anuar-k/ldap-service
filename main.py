@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-
+import json
 from ldap3 import Server, Connection, SUBTREE
 
 app = Flask(__name__)
@@ -9,6 +9,7 @@ LDAP_SERVER = '127.0.0.1:389'
 LDAP_BIND_DN = 'cn=admin,dc=example,dc=org'
 LDAP_BIND_PASSWORD = 'admin'
 LDAP_SEARCH_BASE = 'ou=users,dc=example,dc=org'
+
 
 def getUserByName(username):
     server = Server(LDAP_SERVER)
@@ -24,18 +25,23 @@ def getUserByName(username):
                 if key in user:
                     user[key].extend(val)
                 else:
-                    user[key] = val
+                    if key in 'userPassword':
+                        user[key] = str(val).split("\'")[1]
+                    else:
+                        user[key] = val
     if user:
-        return str(user)
+        return user
     else:
         return None
+
 
 @app.route('/user/<username>')
 def get_user(username):
     try:
         user = getUserByName(username)
+        json_data = json.loads(json.dumps(user))
         if user:
-            return jsonify({'data': user, 'error': ''})
+            return {'data': json_data, 'error': ''}
         else:
             return jsonify({'data': None, 'error': 'User not found'})
     except Exception as e:

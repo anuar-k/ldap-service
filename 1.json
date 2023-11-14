@@ -1,0 +1,2 @@
+{
+  "homeDirectory\": [\"/home/user02\"], \"uid\": [\"user02\"], \"sn\": [\"Bar2\"], \"gidNumber\": [1001], \"cn\": [\"User2\", \"user02\"], \"objectClass\": [\"inetOrgPerson\", \"posixAccount\", \"shadowAccount\"], \"userPassword\": \"1234\", \"uidNumber\": [1001]}
