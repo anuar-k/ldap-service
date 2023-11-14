@@ -31,14 +31,16 @@ def getUserByName(username):
                     user[key].extend(val)
                 else:
                     user[key] = val
-    return str(user)
 
+    if user:
+        return str(user)
+    else:
+        return None
 
 @app.route('/user/<username>')
 def get_user(username):
     try:
         user = getUserByName(username)
-
         if user:
             return jsonify({'data': user, 'error': ''})
         else:
