@@ -23,12 +23,9 @@ def getUserByName(username):
         for entry in conn.entries:
             for key, val in entry.entry_attributes_as_dict.items():
                 if key in user:
-                    user[key].extend(val)
+                    user[key].extend(str(val))
                 else:
-                    if 'password' in str(key).lower():
-                        continue
-                    else:
-                        user[key] = val
+                    user[key] = str(val)
     if user:
         return user
     else:
