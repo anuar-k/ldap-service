@@ -44,10 +44,10 @@ def get_user(username):
         if user:
             return jsonify({'data': user, 'error': ''})
         else:
-            return jsonify({'data': {}, 'error': 'User not found'})
+            return jsonify({'data': None, 'error': 'User not found'})
     except Exception as e:
         print(f"An error occurred: {e}")
-        return jsonify({'data': {}, 'error': str(e)})
+        return jsonify({'data': None, 'error': str(e)})
 
 
 if __name__ == '__main__':
