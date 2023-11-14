@@ -1,6 +1,5 @@
 # ldap-service
-1.used flask, ldap3 libraries
-2. OpenLDAP server
+Used: flask, ldap3 libraries,OpenLDAP server
 ## Rest API
 | Description | Endpoints | METHOD |
 | ---  | -- | -- |
